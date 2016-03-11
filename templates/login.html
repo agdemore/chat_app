@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+    <link rel="stylesheet" href="../style/login.css"/>
+</head>
+<body>
+<div class="login-form">
+    <div class="login-form-inner">
+        <div class="login-form-inner-title">
+            <h1 class="title">Login</h1>
+        </div>
+        <div class="login-form-inner-inputs">
+            <div class="email-input">
+                <input type="text" id="email" placeholder="email"/>
+            </div>
+            <div class="pass-input">
+                <input type="password" id="password" placeholder="password"/>
+            </div>
+            <div class="remember-input">
+                <label for="remember-me">remember me</label>
+                <input type="checkbox" id="remember-me" placeholder="remember me"/>
+            </div>
+            <div class="button-form">
+                <input type="button" id="button" value="Login"/>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <script>
+        const ipcRenderer = require('electron').ipcRenderer;
+
+        var email = document.getElementById('email');
+        var password = document.getElementById('password');
+        var rememberMe = document.getElementById('remember-me');
+
+        var button = document.getElementById('button');
+
+        button.addEventListener('click', function() {
+            var remember = '';
+            if (rememberMe.checked) {
+                remember = "on";
+            } else {
+                remember = "off";
+            }
+            ipcRenderer.send('saveUser', email.value, password.value, remember);
+        });
+    </script>
+</body>
+</html>

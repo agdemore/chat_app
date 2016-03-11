@@ -1,0 +1,74 @@
+body, html {
+    margin: 0;
+    padding: 0;
+}
+.login-form {
+    margin: 0 auto;
+    padding: 0;
+
+    text-align: center;
+    /*background-color: #527397;*/
+    color: #ffffff;
+}
+.login-form-inner {
+    width: 400px;
+    margin: 200px auto;
+    padding: 0;
+    border: 1px solid #cacaca;
+}
+.login-form-inner-title {
+    padding: 10px;
+    background-color: #527397;
+}
+.login-form-inner-title h1 {\
+    margin: 0;
+    padding: 0;
+}
+.login-form-inner-inputs {
+    padding: 10px 0;
+
+}
+.email-input {
+    padding: 10px;
+}
+.email-input input {
+    height: 25px;
+    padding: 3px 14px;
+    border: 1px solid #CACACA;
+    border-radius: 5px;
+}
+.pass-input {
+    padding: 10px;
+}
+.pass-input input {
+    height: 25px;
+    padding: 3px 14px;
+    border: 1px solid #CACACA;
+    border-radius: 5px;
+}
+.remember-input {
+    color: #777474;
+    padding: 5px;
+}
+.remember-input label {
+    padding: 5px;
+}
+.remember-input input {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+.button-form {
+    padding: 10px;
+}
+.button-form input {
+    color: #ffffff;
+    background-color: #527397;
+    border: 0;
+    padding: 10px;
+    width: 100px;
+    height: 40px;
+}
+.button-form input:hover {
+    background-color: #7499c1;
+}

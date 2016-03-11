@@ -1,0 +1,17 @@
+{
+  "name": "vk_chat_app",
+  "version": "0.0.1",
+  "description": "unofficial vk chat for desktop",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "vk",
+    "chat",
+    "desktop",
+    "electron"
+  ],
+  "author": "agdemore",
+  "license": "MIT"
+}
