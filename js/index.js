@@ -7,7 +7,7 @@ const ipcRenderer = require('electron').ipcRenderer;
             <h1> hello!! </h1>,
             document.getElementById('content')
         );
-
+        
         window.onload = function() {
             ipcRenderer.send('ready-to-create-dialogs-list');
         };
@@ -69,7 +69,7 @@ const ipcRenderer = require('electron').ipcRenderer;
                 if (dialogs[i]['message']['user_id']) {
                     var uid = dialogs[i]['message']['user_id'];
                     request({
-                        url: "https://api.vk.com/method/users.get?user_id=" + uid + 
+                        url: "https://api.vk.com/method/users.get?user_id=" + uid +
                             "&fields=contacts&access_token=" + at + "&v=5.8"
                     }, function(error, response, body) {
                         if (error) {
@@ -82,7 +82,7 @@ const ipcRenderer = require('electron').ipcRenderer;
                         }
                     });
                 }
-                
+
             }
 
             console.log(dialogs);

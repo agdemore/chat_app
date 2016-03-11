@@ -5,7 +5,6 @@ const ipcMain = require('electron').ipcMain;
 var fs = require('fs');
 var apiController = require('./vk_api_tools');
 
-
 var mainWindow = null;
 //var loginWindow = null;
 

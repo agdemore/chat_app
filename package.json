@@ -13,5 +13,11 @@
     "electron"
   ],
   "author": "agdemore",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "babel-preset-react": "^6.5.0",
+    "babelify": "^7.2.0",
+    "react": "^0.14.7",
+    "react-dom": "^0.14.7"
+  }
 }
