@@ -19,13 +19,17 @@ app.on('ready', function() {
   	});
 	mainWindow.setMenu(null);
 
-	var userData = JSON.parse(fs.readFileSync(__dirname + '/user_data.json'));
+    try {
+        var userData = JSON.parse(fs.readFileSync(__dirname + '/user_data.json'));
 
-	if (userData.remember == 'on') {
-		mainWindow.loadURL('file://' + __dirname + '/index.html');
-	} else {
-		mainWindow.loadURL('file://' + __dirname + '/templates/login.html');
-	}
+    	if (userData.remember == 'on') {
+    		mainWindow.loadURL('file://' + __dirname + '/index.html');
+    	} else {
+    		mainWindow.loadURL('file://' + __dirname + '/templates/login.html');
+    	}
+    } catch(e) {
+        mainWindow.loadURL('file://' + __dirname + '/templates/login.html');
+    }
 
 
   	mainWindow.webContents.openDevTools();
