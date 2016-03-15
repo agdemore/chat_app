@@ -17,7 +17,7 @@ const userId = appData.user_id;
 function getFriends() {
     return new Promise((resolve, reject) => {
         request({
-            url: 'https://api.vk.com/method/friends.get?user_id=' + userId + '&fields=nickname&v=5.50'
+            url: 'https://api.vk.com/method/friends.get?user_id=' + userId + '&fields=nickname,photo_50&v=5.50'
         }, function(error, response, body) {
             if (error) {
                 reject(error);
@@ -38,16 +38,19 @@ function createListOfFriends() {
                 let uid = friends[i]['id'];
                 let firstName = friends[i]['first_name'];
                 let lastName = friends[i]['last_name'];
+                let photoUrl = friends[i]['photo_50']
                 let elem = {
                     'id': uid,
                     'first_name': firstName,
-                    'last_name': lastName
+                    'last_name': lastName,
+                    'photo': photoUrl
                 };
                 toWrite.push(elem);
             }
             fs.writeFileSync(__dirname + '/friends_data.json', JSON.stringify(toWrite));
         })
 }
+
 
 function getDialogs() {
     return new Promise((resolve, reject) => {
@@ -94,7 +97,11 @@ function createMessage(dialogElement) {
     if (dialogElement['message']['attachments']) {
         mess.innerHTML = dialogElement['message']['attachments'][0]['type']
     } else {
-        mess.innerHTML = dialogElement['message']['body'];
+        let messageBody = dialogElement['message']['body'];
+        if (messageBody.length > 20) {
+            messageBody = messageBody.substr(0, 20) + '...';
+        }
+        mess.innerHTML = messageBody;
     }
 
     if (dialogElement['message']['read_state'] == 0) {
@@ -105,7 +112,8 @@ function createMessage(dialogElement) {
     } else {
         dateSpan.innerHTML = normalDate.toLocaleDateString();
     }
-    photoLi.innerHTML = '[Photo]';
+
+    var img = document.createElement('img');
 
 
     // ------------------ add message name or chat name ------------------------
@@ -115,12 +123,17 @@ function createMessage(dialogElement) {
         for (let i = 0; i < u.length; i++) {
             if (uid == u[i]['id']) {
                 let messageName = u[i]['first_name']+ ' ' + u[i]['last_name'];
+                let p = u[i]['photo']
                 userInfo.innerHTML = messageName;
+                img.src = p;
             }
         }
     } else {
         let chatName = dialogElement['message']['title'];
         let uid = dialogElement['message']['user_id'];
+        if (chatName.length > 20) {
+            chatName = chatName.substr(0, 20) + '...';
+        }
         userInfo.innerHTML = chatName;
         for (let i = 0; i < u.length; i++) {
             if (uid == u[i]['id']) {
@@ -129,7 +142,7 @@ function createMessage(dialogElement) {
         }
     }
     //--------------------------------------------------------------------------
-
+    photoLi.appendChild(img);
     messageInfoLi.appendChild(userInfo);
     messageInfoLi.appendChild(dateSpan);
     messageInfoUl.appendChild(messageInfoLi);
@@ -139,7 +152,7 @@ function createMessage(dialogElement) {
     innerUl.appendChild(messageLi);
     div.appendChild(innerUl);
     li.appendChild(div);
-    console.log(li);
+
     return li;
 }
 
