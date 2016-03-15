@@ -1,12 +1,6 @@
 const ipcRenderer = require('electron').ipcRenderer;
 var request = require('request');
-var React = require('react');
-var ReactDOM = require('react-dom');
 
-ReactDOM.render(
-  <h1>Hello, world!</h1>,
-  document.getElementById('content')
-);
 
 window.onload = function() {
     ipcRenderer.send('ready-to-create-dialogs-list');
