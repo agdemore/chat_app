@@ -3,12 +3,9 @@ var app = electron.app;
 var BrowserWindow = electron.BrowserWindow;
 const ipcMain = require('electron').ipcMain;
 var fs = require('fs');
-var apiController = require('./vk_api_tools');
 
 var mainWindow = null;
-//var loginWindow = null;
 
-// Quit when all windows are closed.
 app.on('window-all-closed', function() {
   	if (process.platform != 'darwin') {
   	  app.quit();
@@ -16,7 +13,6 @@ app.on('window-all-closed', function() {
 });
 
 app.on('ready', function() {
-  // Create the browser window.
   	mainWindow = new BrowserWindow({
 		width: 1200,
 		height: 800
@@ -26,8 +22,7 @@ app.on('ready', function() {
 	var userData = JSON.parse(fs.readFileSync(__dirname + '/user_data.json'));
 
 	if (userData.remember == 'on') {
-		mainWindow.loadURL('file://' + __dirname + '/templates/index.html');
-		main();
+		mainWindow.loadURL('file://' + __dirname + '/index.html');
 	} else {
 		mainWindow.loadURL('file://' + __dirname + '/templates/login.html');
 	}
@@ -45,20 +40,12 @@ app.on('ready', function() {
 			password: password,
 			remember: rememberMe
 		}, null, 4));
-		mainWindow.loadURL('file://' + __dirname + '/templates/index.html');
-		main();
+		mainWindow.loadURL('file://' + __dirname + '/index.html');
 	});
 
-	function main() {
-		//var api = new apiController.Controller(userData.email, userData.password);
-		////console.log(api.dialog());
-		//var dialogs = api.dialog();
-	}
-	ipcMain.on('ready-to-create-dialogs-list', function(event, arg) {
-		var api = new apiController.Controller(userData.email, userData.password);
-		var dialogs = api.dialog();
-		var at = api.accessToken;
-		event.sender.send('create-dialogs-list', dialogs, at);
-	})
+
+	// ipcMain.on('ready-to-create-dialogs-list', function(event, arg) {
+	// 	event.sender.send('create-dialogs-list', dialogs, at);
+	// })
 
 });

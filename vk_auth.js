@@ -86,6 +86,7 @@ function getToken(url) {
 
 //Again don't need parse auth work it home
 //notice!! don't rewrite app_data.json
+function authenticate() {
 httpPost(authUrl)
     .then(body => {
         let params = {};
@@ -123,3 +124,6 @@ httpPost(authUrl)
             user_id: answer.user_id
 		}, null, 4));
     });
+}
+
+module.exports.authenticate = authenticate;
