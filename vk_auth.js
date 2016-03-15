@@ -6,9 +6,10 @@ var Promise = require('promise');
 var fs = require('fs');
 
 
-let userData = JSON.parse(fs.readFileSync(__dirname + '/data.json'));
-var clientId = userData.client_id;
-var scope = 'offline,friends'
+let userData = JSON.parse(fs.readFileSync(__dirname + '/user_data.json'));
+let data = JSON.parse(fs.readFileSync(__dirname + '/data.json'));
+var clientId = data.client_id;
+var scope = data.app_scope;
 var authUrl = 'https://oauth.vk.com/authorize?client_id=' + clientId +
     '&display=page&redirect_uri=https://oauth.vk.com/blank.html&scope=' + scope +
     '&response_type=token&v=5.45';
