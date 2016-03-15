@@ -17,16 +17,17 @@ let config = {
     loaders: [
       {
         test: /\.jsx?$/,
-        loader: 'babel',
-        // query: {
-        //   optional: ['runtime'],
-        //   stage: 0
-        // },
+        loader: ['babel-loader'],
         exclude: /node_modules/,
         query:
         {
             presets:["es2015", "stage-0", "react"]
         }
+      },
+      {
+        test: /\.js?$/,
+        loader: ['babel-loader'],
+        exclude: /node_modules/
       },
       {
         test: /\.css$/,
