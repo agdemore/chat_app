@@ -3,3 +3,4 @@ data.json
 node_modules
 .DS_Store
 app_data.json
+friends_data.json
