@@ -52,6 +52,30 @@ function createListOfFriends() {
 }
 
 
+function loadMessageHistory(userId) {
+    return new Promise((resolve, reject) => {
+        request({
+            url: 'https://api.vk.com/method/messages.getHistory?access_token=' + accessToken + '&user_id=' + userId + '&v=5.50'
+        }, function(error, response, body) {
+            if (error) {
+                reject(error);
+            } else {
+                let historyJson = JSON.parse(response.body);
+                let history = historyJson.response.items;
+                resolve(history);
+            }
+        })
+    })
+}
+
+function loadUserMessageHistory(userId) {
+    loadMessageHistory(userId)
+        .then(history => {
+            console.log(history);
+        })
+}
+
+
 function getDialogs() {
     return new Promise((resolve, reject) => {
         request({
@@ -126,6 +150,7 @@ function createMessage(dialogElement) {
                 let p = u[i]['photo']
                 userInfo.innerHTML = messageName;
                 img.src = p;
+                li.setAttribute('onclick', 'loadUserMessageHistory("' + u[i]['id'] + '");');
             }
         }
     } else {
@@ -159,7 +184,7 @@ function createMessage(dialogElement) {
 function createDialogsUi() {
     getDialogs()
         .then(dialogs => {
-            console.log(dialogs);
+            console.log('dialogs :', dialogs);
             let dialogList = document.getElementById('dialogs');
             let u = JSON.parse(fs.readFileSync(__dirname + '/friends_data.json'));
             for (let i = 0; i < dialogs.length; i++) {
@@ -170,3 +195,4 @@ function createDialogsUi() {
 
 createListOfFriends();
 createDialogsUi();
+loadUserMessageHistory('4392806');
