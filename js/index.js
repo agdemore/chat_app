@@ -72,7 +72,35 @@ function loadUserMessageHistory(userId) {
     loadMessageHistory(userId)
         .then(history => {
             console.log(history);
+            clearChat();
+            let chatList = document.getElementById('chat');
+            for (let i = history.length - 1; i >= 0; i--) {
+                chatList.appendChild(createChat(history[i]));
+            }
         })
+}
+
+function createChat(historyElement) {
+    var li = document.createElement('li');
+    li.className = 'chat-message';
+    var message = document.createElement('span');
+    message.className = 'chat-message-inner';
+    message.innerHTML = historyElement.body;
+    if (historyElement.from_id == userId) {
+        li.className = 'chat-message from-me';
+        message.className = 'chat-message-inner from-me-color';
+    }
+
+    li.appendChild(message);
+    return li;
+}
+
+function clearChat() {
+    let ul = document.getElementById('chat');
+    let lis = ul.getElementsByTagName('li');
+    for (let i = lis.length - 1; i >= 0; i--) {
+        ul.removeChild(lis[i]);
+    }
 }
 
 
@@ -195,4 +223,3 @@ function createDialogsUi() {
 
 createListOfFriends();
 createDialogsUi();
-loadUserMessageHistory('4392806');
