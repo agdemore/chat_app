@@ -77,6 +77,13 @@ function loadUserMessageHistory(userId) {
             for (let i = history.length - 1; i >= 0; i--) {
                 chatList.appendChild(createChat(history[i]));
             }
+            let btn = document.getElementById('send-message');
+            if (btn.hasAttribute('onclick')) {
+                btn.removeAttribute('onclick');
+                btn.setAttribute('onclick', 'sendMessage("' + userId + '");');
+            } else {
+                btn.setAttribute('onclick', 'sendMessage("' + userId + '");');
+            }
         })
 }
 
@@ -179,6 +186,8 @@ function createMessage(dialogElement) {
                 userInfo.innerHTML = messageName;
                 img.src = p;
                 li.setAttribute('onclick', 'loadUserMessageHistory("' + u[i]['id'] + '");');
+                li.setAttribute('user_id', u[i]['id']);
+                // li.id = 'message';
             }
         }
     } else {
@@ -220,6 +229,27 @@ function createDialogsUi() {
             }
         })
 }
+
+
+function sendMessage(userId) {
+
+    let messageText = document.getElementById('message-text').value;
+    if (messageText == 0) {
+
+    } else {
+        request({
+            url: 'https://api.vk.com/method/messages.send?access_token=' + accessToken +
+                    '&user_id=' + userId + '&message='+ messageText + '&v=5.50'
+        }, function(error, response, body) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log('ok');
+            }
+        })
+    }
+}
+
 
 createListOfFriends();
 createDialogsUi();
