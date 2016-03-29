@@ -1,9 +1,27 @@
 var $ = require('jquery');
 
+var originWidth = 1200;
+var originHeight = 800;
+
 $(document).on('click', "li.message", function() {
     var height = $('div.right-menu').height();
     $('.right-menu').scrollTop(height)
+    if ($(window).width() < 1100) {
+        $('.left-menu').addClass('hide-element');
+        $('.nav-expand').toggleClass('open');
+    }
+
 });
+
+var appWidth = $(window).width();
+if (appWidth == originWidth) {
+    $('.show-left-menu').hide();
+} else if (appWidth > originWidth) {
+    $('.show-left-menu').hide();
+} else if (appWidth < originWidth) {
+    $('.show-left-menu').show();
+}
+
 
 $(window).resize(function() {
     var wWidth = $(window).width();
@@ -32,4 +50,11 @@ $(window).resize(function() {
 
 $('.show-left-menu').click(function() {
     $('.left-menu').toggleClass('hide-element');
+});
+$(".nav-expand").on('click', function(e){
+
+  e.preventDefault();
+
+  $(this).toggleClass('open');
+
 });
