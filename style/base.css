@@ -169,6 +169,7 @@ body {
     width: 100%;
     font-size: 1em;
     border: 0;
+    outline: none;
 
 }
 #send-message {
@@ -177,9 +178,11 @@ body {
     background-color: #fff;
     border: 0;
     color: #cacaca;
+    outline: none;
 }
 #send-message:hover {
     color: #000;
+    outline: none;
 }
 
 
