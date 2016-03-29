@@ -3,3 +3,4 @@ node_modules
 .DS_Store
 app_data.json
 friends_data.json
+js/jquery-1.12.2.js
