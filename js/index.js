@@ -55,7 +55,7 @@ function createListOfFriends() {
 function loadMessageHistory(userId) {
     return new Promise((resolve, reject) => {
         request({
-            url: 'https://api.vk.com/method/messages.getHistory?access_token=' + accessToken + '&user_id=' + userId + '&v=5.50'
+            url: 'https://api.vk.com/method/messages.getHistory?access_token=' + accessToken + '&count=50&user_id=' + userId + '&v=5.50'
         }, function(error, response, body) {
             if (error) {
                 reject(error);
