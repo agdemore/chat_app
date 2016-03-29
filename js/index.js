@@ -90,11 +90,11 @@ function loadUserMessageHistory(userId) {
 function createChat(historyElement) {
     var li = document.createElement('li');
     li.className = 'chat-message';
-    var message = document.createElement('span');
+    var message = document.createElement('p');
     message.className = 'chat-message-inner';
     message.innerHTML = historyElement.body;
     if (historyElement.from_id == userId) {
-        li.className = 'chat-message from-me';
+        li.className = 'chat-message-from-me';
         message.className = 'chat-message-inner from-me-color';
     }
 
