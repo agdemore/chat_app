@@ -14,8 +14,10 @@ app.on('window-all-closed', function() {
 
 app.on('ready', function() {
   	mainWindow = new BrowserWindow({
-		width: 1200,
-		height: 800
+		width: 900,
+		height: 800,
+        minWidth: 500,
+        minHeight: 300
   	});
 	mainWindow.setMenu(null);
 
