@@ -9,11 +9,15 @@ body, html {
 body {
     overflow: hidden;
 }
-/**::-webkit-scrollbar {
+*::-webkit-scrollbar {
     width: 7px;
     height: 7px;
-    background-color: #сасаса;
-}*/
+    background-color: transparent;
+    border-left: 1px solid #cacaca;
+}
+*::-webkit-scrollbar-thumb {
+    background-color: #B7B7B7;
+}
 .main {
     margin: 0;
     padding: 0;
@@ -144,28 +148,23 @@ body {
 
 
 .tools {
-    float: left;
-    width: 100%;
+
 }
-.tools ul {
-    display: inline-flex;
-    list-style-type: none;
-    margin: 0;
-    padding: 5px;
-    width: 100%;
+.tools-wrapper {
+    display: flex;
+    height: 100%;
 }
-.text {
-    padding-right: 5px;
-    width: 50%;
-    float: left;
+.text-in {
+    width: 80%;
 }
-.send {
-    padding-left: 5px;
-    right: 5px;
-    /*width: 20%;*/
+.send-out {
+    width: 20%;
+    text-align: right;
 }
+
+
 #message-text {
-    height: 35px;
+    height: 45px;
     width: 100%;
     font-size: 1em;
     border: 0;
@@ -174,7 +173,7 @@ body {
 }
 #send-message {
     font-size: 1em;
-    height: 41px;
+    height: 50px;
     background-color: #fff;
     border: 0;
     color: #cacaca;
@@ -197,16 +196,19 @@ body {
 .chat li p {
     border: 1px solid #cacaca;
     padding: 5px 10px;
-    border-radius: 20px;
+    border-radius: 8px;
     margin: 5px;
+    max-width: 400px;
 }
 .chat-message-inner {
     float: left;
     clear: both;
+    text-align: left;
 }
-.chat-message-from-me {
+li.chat-message-from-me {
     float: right;
     clear: both;
+    text-align: right;
 }
 .from-me {
     text-align: right;
