@@ -129,7 +129,7 @@ function getDialogs() {
 
 function createMessage(dialogElement) {
     // create message element
-    var li = document.createElement('li');
+    var li = document.createElement('li'); // <------- replace li to div
     li.className = 'message';
     var div = document.createElement('div');
     div.className = 'message-inner';
