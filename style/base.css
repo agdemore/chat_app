@@ -10,7 +10,7 @@ body {
     overflow: hidden;
 }
 *::-webkit-scrollbar {
-    width: 7px;
+    width: 3px;
     height: 7px;
     background-color: transparent;
     border-left: 1px solid #cacaca;
@@ -52,7 +52,6 @@ body {
 .left-menu {
     background-color: #fff;
     position: absolute;
-    height: 100%;
     width: 35%;
     border-right: 1px solid #cacaca;
     overflow: auto;
@@ -65,7 +64,6 @@ body {
     left: 35%;
     width: 65%;
     height: 100%;
-    overflow: auto;
 }
 .right-menu-min {
     background-color: #fff;
@@ -78,8 +76,8 @@ body {
 .right-menu-content {
     background-color: #fff;
     position: relative;
-    height: 100%;
     border-left: 1px solid #cacaca;
+    overflow: auto;
 
 }
 .right-menu-footer {
@@ -292,4 +290,11 @@ li.chat-message-from-me {
 }
 .nav-expand:hover .sandwich:before, .nav-expand:hover .sandwich:after {
   background-color: #979fa4;
+}
+
+
+
+
+.west-cost-custom-width {
+    width: 500px;
 }
