@@ -4,8 +4,9 @@ var originWidth = 900;
 var originHeight = 800;
 
 $(document).on('click', "li.message", function() {
-    var height = $('div.right-menu').height();
-    $('.right-menu').scrollTop(height)
+    var height = $('.chat').height();
+    console.log(height);
+    $('.right-menu-content').scrollTop(height);
     if ($(window).width() < originWidth) {
         $('.left-menu').addClass('hide-element');
         $('.nav-expand').toggleClass('open');
@@ -15,6 +16,7 @@ $(document).on('click', "li.message", function() {
 
 // to display chat window on start
 var appWidth = $(window).width();
+var appHeight = $(window).height();
 if (appWidth == originWidth) {
     $('.show-left-menu').show();
 } else if (appWidth > originWidth) {
@@ -22,18 +24,24 @@ if (appWidth == originWidth) {
 } else if (appWidth < originWidth) {
     $('.show-left-menu').hide();
 }
+$('.left-menu').height(appHeight - 39);
+$('.right-menu-content').height(appHeight - 39 - 52);
 
 
 $(window).resize(function() {
     var wWidth = $(window).width();
+    var wHeight = $(window).height();
+    $('.left-menu').height(wHeight - 39);
+    $('.right-menu-content').height(wHeight - 39 - 52);
     if (wWidth < 870) {
         $('.left-top').addClass('hide-element');
 
         $('.left-menu').addClass('hide-element');
+        $('.left-menu').addClass('west-cost-custom-width');
 
         $('.right-top').addClass('right-top-min');
 
-        $('.right-menu').addClass('right-menu-min');
+        $('.right-menu').addClass('right-menu-min');    
 
         $('.show-left-menu').show();
     } else if (wWidth >= 900) {
@@ -46,6 +54,7 @@ $(window).resize(function() {
         if ($('.right-menu').hasClass('right-menu-min'))
             $('.right-menu').removeClass('right-menu-min');
         $('.show-left-menu').hide();
+        $('.left-menu').removeClass('west-cost-custom-width');
     }
 });
 
