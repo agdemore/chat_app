@@ -52,10 +52,12 @@ function createListOfFriends() {
 }
 
 
-function loadMessageHistory(userId) {
+function loadMessageHistory(userId, startMessage) {
     return new Promise((resolve, reject) => {
         request({
-            url: 'https://api.vk.com/method/messages.getHistory?access_token=' + accessToken + '&count=50&user_id=' + userId + '&v=5.50'
+            url: 'https://api.vk.com/method/messages.getHistory?' +
+                    'access_token=' + accessToken + '&count=50&offset=0&user_id=' + userId +
+                    '&start_message_id=' + startMessage + '&v=5.38'
         }, function(error, response, body) {
             if (error) {
                 reject(error);
@@ -68,8 +70,8 @@ function loadMessageHistory(userId) {
     })
 }
 
-function loadUserMessageHistory(userId) {
-    loadMessageHistory(userId)
+function loadUserMessageHistory(userId, startMessage) {
+    loadMessageHistory(userId, startMessage)
         .then(history => {
             console.log(history);
             clearChat();
@@ -86,6 +88,15 @@ function loadUserMessageHistory(userId) {
             }
         })
 }
+// add to .chat attribute that will show pagination
+// loadMoreUserMessageHistory(userId, startMessage) {
+//     loadMessageHistory(userId, startMessage)
+//         .then(history => {
+//
+//         })
+// }
+
+
 
 function createChat(historyElement) {
     var li = document.createElement('li');
@@ -185,7 +196,7 @@ function createMessage(dialogElement) {
                 let p = u[i]['photo']
                 userInfo.innerHTML = messageName;
                 img.src = p;
-                li.setAttribute('onclick', 'loadUserMessageHistory("' + u[i]['id'] + '");');
+                li.setAttribute('onclick', 'loadUserMessageHistory("' + u[i]['id'] + '", "0");');
                 li.setAttribute('user_id', u[i]['id']);
                 // li.id = 'message';
             }
@@ -253,3 +264,6 @@ function sendMessage(userId) {
 
 createListOfFriends();
 createDialogsUi();
+
+
+// module.exports.loadMoreMessages = loadMoreUserMessageHistory;
