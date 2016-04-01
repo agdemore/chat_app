@@ -1,18 +1,26 @@
 var $ = require('jquery');
+// var helper = require('/index.js')
 
 var originWidth = 900;
 var originHeight = 800;
 
+var user = {};
+
 $(document).on('click', "li.message", function() {
-    var height = $('.chat').height();
-    console.log(height);
-    $('.right-menu-content').scrollTop(height);
+    scrollToEnd('.chat', '.right-menu-content');
     if ($(window).width() < originWidth) {
         $('.left-menu').addClass('hide-element');
         $('.nav-expand').toggleClass('open');
     }
+    user.userId = $(this).attr('user_id')
 
+    //add method to delete class unread message
 });
+
+function scrollToEnd(elementHeight, elementToApplyScroll) {
+    var height = $(elementHeight).height();
+    $(elementToApplyScroll).scrollTop(height);
+}
 
 // to display chat window on start
 var appWidth = $(window).width();
@@ -41,7 +49,7 @@ $(window).resize(function() {
 
         $('.right-top').addClass('right-top-min');
 
-        $('.right-menu').addClass('right-menu-min');    
+        $('.right-menu').addClass('right-menu-min');
 
         $('.show-left-menu').show();
     } else if (wWidth >= 900) {
@@ -68,3 +76,15 @@ $(".nav-expand").on('click', function(e){
   $(this).toggleClass('open');
 
 });
+
+
+//load more messages
+$('.right-menu-content').on('scroll', function() {
+    if ($('.right-menu-content').scrollTop() == 0) {
+        console.log('on top');
+        console.log(user.userId);
+        var param = '[ user_id = ' + user.userId + "']"
+        console.log(param);
+        // $('[ user_id = ' + user.userId + "']")
+    }
+})
