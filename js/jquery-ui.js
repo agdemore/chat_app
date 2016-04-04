@@ -1,5 +1,4 @@
 var $ = require('jquery');
-// var helper = require('/index.js')
 
 var originWidth = 900;
 var originHeight = 800;
@@ -76,15 +75,3 @@ $(".nav-expand").on('click', function(e){
   $(this).toggleClass('open');
 
 });
-
-
-//load more messages
-$('.right-menu-content').on('scroll', function() {
-    if ($('.right-menu-content').scrollTop() == 0) {
-        console.log('on top');
-        console.log(user.userId);
-        var param = '[ user_id = ' + user.userId + "']"
-        console.log(param);
-        // $('[ user_id = ' + user.userId + "']")
-    }
-})
