@@ -5,6 +5,7 @@ var request = require('request');
 let vkAuth = require('./vk_auth');
 let fs = require('fs');
 let Promise = require('promise');
+let jQuery = require('jquery');
 
 vkAuth.authenticate();
 
@@ -52,12 +53,12 @@ function createListOfFriends() {
 }
 
 
-function loadMessageHistory(userId, startMessage) {
+function loadMessageHistory(userId, offset) {
     return new Promise((resolve, reject) => {
         request({
             url: 'https://api.vk.com/method/messages.getHistory?' +
-                    'access_token=' + accessToken + '&count=50&offset=0&user_id=' + userId +
-                    '&start_message_id=' + startMessage + '&v=5.38'
+                    'access_token=' + accessToken + '&count=50&offset=' + offset + '&user_id=' + userId +
+                    '&start_message_id=0&v=5.38'
         }, function(error, response, body) {
             if (error) {
                 reject(error);
@@ -70,8 +71,8 @@ function loadMessageHistory(userId, startMessage) {
     })
 }
 
-function loadUserMessageHistory(userId, startMessage) {
-    loadMessageHistory(userId, startMessage)
+function loadUserMessageHistory(userId, offset) {
+    loadMessageHistory(userId, offset)
         .then(history => {
             console.log(history);
             clearChat();
@@ -88,28 +89,45 @@ function loadUserMessageHistory(userId, startMessage) {
             }
         })
 }
+
 // add to .chat attribute that will show pagination
-// loadMoreUserMessageHistory(userId, startMessage) {
-//     loadMessageHistory(userId, startMessage)
-//         .then(history => {
-//
-//         })
-// }
+function loadMoreUserMessageHistory(userId, startMessage) {
+    loadMessageHistory(userId, startMessage)
+        .then(history => {
+            console.log(history);
+            let chatList = jQuery('.chat');
+            for (let i = 0; i < history.length; i++) {
+                chatList.prepend(createChat(history[i]));
+            }
+            let btn = document.getElementById('send-message');
+            if (btn.hasAttribute('onclick')) {
+                btn.removeAttribute('onclick');
+                btn.setAttribute('onclick', 'sendMessage("' + userId + '");');
+            } else {
+                btn.setAttribute('onclick', 'sendMessage("' + userId + '");');
+            }
+        })
+}
 
 
 
 function createChat(historyElement) {
     var li = document.createElement('li');
-    li.className = 'chat-message';
+    li.className = 'm chat-message';
     var message = document.createElement('p');
+    let dateElem = document.createElement('span');
+    let date = historyElement.date * 1000;
+    let nDate = new Date(date);
+    dateElem.innerHTML = nDate;
     message.className = 'chat-message-inner';
     message.innerHTML = historyElement.body;
     if (historyElement.from_id == userId) {
-        li.className = 'chat-message-from-me';
+        li.className = 'm chat-message-from-me';
         message.className = 'chat-message-inner from-me-color';
     }
 
     li.appendChild(message);
+    // li.appendChild(dateElem);
     return li;
 }
 
@@ -198,6 +216,7 @@ function createMessage(dialogElement) {
                 img.src = p;
                 li.setAttribute('onclick', 'loadUserMessageHistory("' + u[i]['id'] + '", "0");');
                 li.setAttribute('user_id', u[i]['id']);
+                li.setAttribute('pagination', '50');
                 // li.id = 'message';
             }
         }
@@ -266,4 +285,14 @@ createListOfFriends();
 createDialogsUi();
 
 
-// module.exports.loadMoreMessages = loadMoreUserMessageHistory;
+// load-more-messages-with-jQuery action on scroll
+jQuery('.right-menu-content').on('scroll', function() {
+    if (jQuery('.right-menu-content').scrollTop() == 0) {
+        console.log(user.userId);
+        let param = "[ user_id = '" + user.userId + "']";
+        let page = $(param).attr('pagination');
+        console.log(page);
+        $(param).attr('pagination', parseInt(page) + 50);
+        loadMoreUserMessageHistory(user.userId, page);
+    }
+})
