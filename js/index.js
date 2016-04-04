@@ -140,10 +140,10 @@ function clearChat() {
 }
 
 
-function getDialogs() {
+function getDialogs(offset) {
     return new Promise((resolve, reject) => {
         request({
-            url: 'https://api.vk.com/method/messages.getDialogs?access_token=' + accessToken + '&v=5.33'
+            url: 'https://api.vk.com/method/messages.getDialogs?access_token=' + accessToken + '&offset='+ offset +'&v=5.33'
         }, function(error, response, body) {
             if (error) {
                 reject(error);
@@ -248,8 +248,8 @@ function createMessage(dialogElement) {
     return li;
 }
 
-function createDialogsUi() {
-    getDialogs()
+function createDialogsUi(offset) {
+    getDialogs(offset)
         .then(dialogs => {
             console.log('dialogs :', dialogs);
             let dialogList = document.getElementById('dialogs');
@@ -282,17 +282,25 @@ function sendMessage(userId) {
 
 
 createListOfFriends();
-createDialogsUi();
+createDialogsUi('0');
 
 
 // load-more-messages-with-jQuery action on scroll
 jQuery('.right-menu-content').on('scroll', function() {
     if (jQuery('.right-menu-content').scrollTop() == 0) {
-        console.log(user.userId);
+        // console.log(user.userId);
         let param = "[ user_id = '" + user.userId + "']";
-        let page = $(param).attr('pagination');
-        console.log(page);
-        $(param).attr('pagination', parseInt(page) + 50);
+        let page = jQuery(param).attr('pagination');
+        // console.log(page);
+        jQuery(param).attr('pagination', parseInt(page) + 50);
         loadMoreUserMessageHistory(user.userId, page);
+    }
+})
+// load-more-chat-with-jQuery action on scroll
+jQuery('.left-menu').on('scroll', function() {
+    if (jQuery('.left-menu').scrollTop() + jQuery('.left-menu').innerHeight()  == jQuery(this)[0].scrollHeight) {
+        let page = jQuery('.left-menu').attr('pagination');
+        createDialogsUi(page);
+        jQuery('.left-menu').attr('pagination', parseInt(page) + 20);
     }
 })
