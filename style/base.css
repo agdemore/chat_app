@@ -78,6 +78,7 @@ body {
     position: relative;
     border-left: 1px solid #cacaca;
     overflow: auto;
+    overflow-x: hidden;
 
 }
 .right-menu-footer {
