@@ -77,6 +77,7 @@ function loadUserMessageHistory(userId, offset) {
             console.log(history);
             clearChat();
             createChatUi(history);
+            jQuery('.right-menu-content').scrollTop(jQuery('.right-menu-content')[0].scrollHeight);
         })
 }
 
@@ -85,7 +86,9 @@ function loadMoreUserMessageHistory(userId, startMessage) {
     loadMessageHistory(userId, startMessage)
         .then(history => {
             console.log(history);
+            let firstMessage = jQuery('.chat div p:first');
             createChatUi(history);
+            jQuery('.right-menu-content').scrollTop(firstMessage.offset().top - 50);
         })
 }
 
@@ -101,6 +104,7 @@ function createChatUi(history) {
     } else {
         btn.setAttribute('onclick', 'sendMessage("' + userId + '");');
     }
+
 }
 
 function createChat2(historyElement) {
@@ -122,25 +126,25 @@ function createChat2(historyElement) {
     return li;
 }
 
-function createChat(historyElement) {
-    var li = document.createElement('div');
-    li.className = 'm chat-message';
-    var message = document.createElement('p');
-    let dateElem = document.createElement('span');
-    let date = historyElement.date * 1000;
-    let nDate = new Date(date);
-    dateElem.innerHTML = nDate;
-    message.className = 'chat-message-inner';
-    message.innerHTML = historyElement.body;
-    if (historyElement.from_id == userId) {
-        li.className = 'm chat-message-from-me';
-        message.className = 'chat-message-inner from-me-color';
-    }
-
-    li.appendChild(message);
-    // li.appendChild(dateElem);
-    return li;
-}
+// function createChat(historyElement) {
+//     var li = document.createElement('div');
+//     li.className = 'm chat-message';
+//     var message = document.createElement('p');
+//     let dateElem = document.createElement('span');
+//     let date = historyElement.date * 1000;
+//     let nDate = new Date(date);
+//     dateElem.innerHTML = nDate;
+//     message.className = 'chat-message-inner';
+//     message.innerHTML = historyElement.body;
+//     if (historyElement.from_id == userId) {
+//         li.className = 'm chat-message-from-me';
+//         message.className = 'chat-message-inner from-me-color';
+//     }
+//
+//     li.appendChild(message);
+//     // li.appendChild(dateElem);
+//     return li;
+// }
 
 function clearChat() {
     let div = document.getElementById('chat');
@@ -299,14 +303,10 @@ createDialogsUi('0');
 // load-more-messages-with-jQuery action on scroll
 jQuery('.right-menu-content').on('scroll', function() {
     if (jQuery('.right-menu-content').scrollTop() == 0) {
-        // console.log(user.userId);
         let param = "[ user_id = '" + user.userId + "']";
         let page = jQuery(param).attr('pagination');
-        // console.log(page);
         jQuery(param).attr('pagination', parseInt(page) + 50);
         loadMoreUserMessageHistory(user.userId, page);
-        jQuery('.right-menu-content').scrollTop(jQuery('.right-menu-content').height());
-        console.log(jQuery(this).offset().top);
     }
 })
 // load-more-chat-with-jQuery action on scroll
