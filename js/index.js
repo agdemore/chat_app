@@ -76,17 +76,7 @@ function loadUserMessageHistory(userId, offset) {
         .then(history => {
             console.log(history);
             clearChat();
-            let chatList = document.getElementById('chat');
-            for (let i = history.length - 1; i >= 0; i--) {
-                chatList.appendChild(createChat(history[i]));
-            }
-            let btn = document.getElementById('send-message');
-            if (btn.hasAttribute('onclick')) {
-                btn.removeAttribute('onclick');
-                btn.setAttribute('onclick', 'sendMessage("' + userId + '");');
-            } else {
-                btn.setAttribute('onclick', 'sendMessage("' + userId + '");');
-            }
+            createChatUi(history);
         })
 }
 
@@ -95,24 +85,45 @@ function loadMoreUserMessageHistory(userId, startMessage) {
     loadMessageHistory(userId, startMessage)
         .then(history => {
             console.log(history);
-            let chatList = jQuery('.chat');
-            for (let i = 0; i < history.length; i++) {
-                chatList.prepend(createChat(history[i]));
-            }
-            let btn = document.getElementById('send-message');
-            if (btn.hasAttribute('onclick')) {
-                btn.removeAttribute('onclick');
-                btn.setAttribute('onclick', 'sendMessage("' + userId + '");');
-            } else {
-                btn.setAttribute('onclick', 'sendMessage("' + userId + '");');
-            }
+            createChatUi(history);
         })
 }
 
+function createChatUi(history) {
+    let chatList = jQuery('.chat');
+    for (let i = 0; i < history.length; i++) {
+        chatList.prepend(createChat2(history[i]));
+    }
+    let btn = document.getElementById('send-message');
+    if (btn.hasAttribute('onclick')) {
+        btn.removeAttribute('onclick');
+        btn.setAttribute('onclick', 'sendMessage("' + userId + '");');
+    } else {
+        btn.setAttribute('onclick', 'sendMessage("' + userId + '");');
+    }
+}
 
+function createChat2(historyElement) {
+    let li = document.createElement('div');
+    li.className = 'a';
+    let message = document.createElement('p');
+    let dateElem = document.createElement('span');
+    let date = historyElement.date * 1000;
+    let nDate = new Date(date);
+    dateElem.innerHTML = nDate;
+    message.className = 'a-inner';
+    message.innerHTML = historyElement.body;
+    if (historyElement.from_id == userId) {
+        li.className = 'a-message-from-me';
+        message.className = 'a-inner from-me-color';
+    }
+
+    li.appendChild(message);
+    return li;
+}
 
 function createChat(historyElement) {
-    var li = document.createElement('li');
+    var li = document.createElement('div');
     li.className = 'm chat-message';
     var message = document.createElement('p');
     let dateElem = document.createElement('span');
@@ -132,10 +143,10 @@ function createChat(historyElement) {
 }
 
 function clearChat() {
-    let ul = document.getElementById('chat');
-    let lis = ul.getElementsByTagName('li');
-    for (let i = lis.length - 1; i >= 0; i--) {
-        ul.removeChild(lis[i]);
+    let div = document.getElementById('chat');
+    let msgs = div.getElementsByTagName('div');
+    for (let i = msgs.length - 1; i >= 0; i--) {
+        div.removeChild(msgs[i]);
     }
 }
 
@@ -294,6 +305,8 @@ jQuery('.right-menu-content').on('scroll', function() {
         // console.log(page);
         jQuery(param).attr('pagination', parseInt(page) + 50);
         loadMoreUserMessageHistory(user.userId, page);
+        jQuery('.right-menu-content').scrollTop(jQuery('.right-menu-content').height());
+        console.log(jQuery(this).offset().top);
     }
 })
 // load-more-chat-with-jQuery action on scroll
