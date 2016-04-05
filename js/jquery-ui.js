@@ -5,8 +5,7 @@ var originHeight = 800;
 
 var user = {};
 
-$(document).on('click', "li.message", function() {
-    scrollToEnd('.chat', '.right-menu-content');
+$(document).on('click', ".message", function() {
     if ($(window).width() < originWidth) {
         $('.left-menu').addClass('hide-element');
         $('.nav-expand').toggleClass('open');
@@ -15,11 +14,6 @@ $(document).on('click', "li.message", function() {
 
     //add method to delete class unread message
 });
-
-function scrollToEnd(elementHeight, elementToApplyScroll) {
-    var height = $(elementHeight).height();
-    $(elementToApplyScroll).scrollTop(height);
-}
 
 // to display chat window on start
 var appWidth = $(window).width();
