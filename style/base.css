@@ -299,3 +299,33 @@ li.chat-message-from-me {
 .west-cost-custom-width {
     width: 500px;
 }
+
+
+
+
+
+/* ------ TEST DESIGN --------*/
+
+.a {
+    margin-right: 20%;
+}
+.a p {
+
+}
+.a-inner {
+
+}
+.a-message-from-me {
+    text-align: right;
+    margin-left: 20%;
+}    
+.chat div {
+    padding: 5px;
+}
+.chat div p {
+    margin: 0;
+    padding: 5px;
+    display: inline-block;
+    border-radius: 8px;
+    border: 1px solid #cacaca;
+}
