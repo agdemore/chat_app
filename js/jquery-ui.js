@@ -4,14 +4,15 @@ var originWidth = 900;
 var originHeight = 800;
 
 var user = {};
+var chat = {};
 
 $(document).on('click', ".message", function() {
     if ($(window).width() < originWidth) {
         $('.left-menu').addClass('hide-element');
         $('.nav-expand').toggleClass('open');
     }
-    user.userId = $(this).attr('user_id')
-
+    user.userId = $(this).attr('user_id');
+    chat.chatId = $(this).attr('chat_id');
     //add method to delete class unread message
 });
 
