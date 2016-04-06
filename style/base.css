@@ -318,9 +318,15 @@ li.chat-message-from-me {
 .a-message-from-me {
     text-align: right;
     margin-left: 20%;
-}    
+}
 .chat div {
     padding: 5px;
+    /*display: inline-flex;*/
+}
+.chat div img {
+    width: 30px;
+    height: 30px;
+    border-radius: 30px;
 }
 .chat div p {
     margin: 0;
