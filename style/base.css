@@ -323,7 +323,7 @@ li.chat-message-from-me {
     padding: 5px;
     /*display: inline-flex;*/
 }
-.chat div img {
+.user-photo-chat {
     width: 30px;
     height: 30px;
     border-radius: 30px;
@@ -334,4 +334,25 @@ li.chat-message-from-me {
     display: inline-block;
     border-radius: 8px;
     border: 1px solid #cacaca;
+}
+.chat div p a {
+    text-decoration: none;
+}
+img.attachment-img {
+    /*width: 300px;*/
+    height: 200px;
+}
+
+
+.attach-link {
+    width: 349px;
+    text-align: center;
+}
+.attach-link-title {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+.chat div p.attach-link-dicsription {
+    border: 0;
 }
