@@ -106,9 +106,9 @@ function addSendLogic() {
     let btn = document.getElementById('send-message');
     if (btn.hasAttribute('onclick')) {
         btn.removeAttribute('onclick');
-        btn.setAttribute('onclick', 'sendMessage("' + userId + '");');
+        btn.setAttribute('onclick', 'sendMessage("' + user.userId + '");');
     } else {
-        btn.setAttribute('onclick', 'sendMessage("' + userId + '");');
+        btn.setAttribute('onclick', 'sendMessage("' + user.userId + '");');
     }
 }
 
@@ -122,6 +122,7 @@ function createChat2(historyElement) {
     dateElem.innerHTML = nDate;
     message.className = 'a-inner';
     if (historyElement.attachments) {
+        console.log('>>>', historyElement.attachments);
         message.innerHTML = messageTypesHelper(historyElement.attachments);
     } else if (historyElement.action) {
         if (historyElement.action == 'chat_create') {
@@ -332,6 +333,9 @@ function createMessage(dialogElement) {
                 li.setAttribute('user_id', u[i]['id']);
                 li.setAttribute('pagination', '50');
                 // li.id = 'message';
+            } else if (uid != u[i]['id']) {
+                // let messageUserId = uid;
+                // userInfo.innerHTML = messageUserId;
             }
         }
     } else if (dialogElement['message']['chat_id']){
@@ -386,12 +390,13 @@ function sendMessage(userId) {
     } else {
         request({
             url: 'https://api.vk.com/method/messages.send?access_token=' + accessToken +
-                    '&user_id=' + userId + '&message='+ messageText + '&v=5.50'
+                    '&user_id=' + userId + '&message='+ encodeURIComponent(messageText) + '&v=5.50'
         }, function(error, response, body) {
             if (error) {
                 console.log(error);
             } else {
                 console.log('ok');
+                jQuery('#message-text').val('');
             }
         })
     }
@@ -429,12 +434,22 @@ jQuery('.left-menu').on('scroll', function() {
 
 
 function messageTypesHelper(attachment) {
-    let type = attachment[0]['type'];
-    if (type == 'photo') {
-        return '<a href=' + attachment[0]['photo']['photo_1280'] + ' target="_blank">' +
-                '<img src=' + attachment[0]['photo']['photo_604'] + ' class="attachment-img"></a>'
-    } else if (type == 'link') {
-        return '<a href=' + attachment[0]['link']['url'] + ' target="_blank">outlink: '+ attachment[0]['link']['title'] +'</a>'
+    for (let i = 0; i < attachment.length; i++) {
+        let type = attachment[i]['type'];
+        if (type == 'photo') {
+            return '<a href=' + attachment[i]['photo']['photo_1280'] + ' target="_blank">' +
+                    '<img src=' + attachment[i]['photo']['photo_604'] + ' class="attachment-img"></a>'
+        } else if (type == 'link') {
+            return '<a href=' + attachment[i]['link']['url'] + ' target="_blank">outlink: ' + attachment[0]['link']['title'] +'</a>'
+        } else if (type == 'audio') {
+            return '<strong>audio</strong>'
+        } else if (type == 'video') {
+            return '<strong>video</strong>'
+        } else if (type == 'doc') {
+            return '<a href=' + attachment[i]['doc']['url'] + ' target="_blank">File: ' + attachment[0]['doc']['title'] +'</a>';
+        } else if (type == 'wall') {
+            return '<strong>wall</strong>'
+        }
     }
 }
 
@@ -447,8 +462,8 @@ function parseMessageForLink(messageText) {
     let url_pattern = /\.(?=[a-zA-Z])/;
     let a = messageText.split(' ');
     for (let el of a) {
-        if (a.length != 1)
-            el = el.replace(',','')
+        if (a.length == 1)
+            el = el.replace(',','');
         let score = el.search(url_pattern);
         if (score > 0) {
             let link = makeLink(el);
