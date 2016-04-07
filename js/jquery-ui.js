@@ -13,6 +13,7 @@ $(document).on('click', ".message", function() {
     }
     user.userId = $(this).attr('user_id');
     chat.chatId = $(this).attr('chat_id');
+    $(this).attr('pagination', 50);
     //add method to delete class unread message
 });
 
