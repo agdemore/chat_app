@@ -150,8 +150,9 @@ body {
 
 }
 .tools-wrapper {
-    display: flex;
+    display: inline-flex;
     height: 100%;
+    width: 65%;
 }
 .text-in {
     width: 80%;
