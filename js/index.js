@@ -121,7 +121,15 @@ function createChat2(historyElement) {
     let nDate = new Date(date);
     dateElem.innerHTML = nDate;
     message.className = 'a-inner';
-    message.innerHTML = historyElement.body;
+    if (historyElement.attachments) {
+        message.innerHTML = messageTypesHelper(historyElement.attachments);
+    } else if (historyElement.action) {
+        if (historyElement.action == 'chat_create') {
+            message.innerHTML = 'cteate chat ' + historyElement.action_text;
+        }
+    } else {
+        message.innerHTML = parseMessageForLink(historyElement.body);
+    }
     if (historyElement.from_id == userId) {
         li.className = 'a-message-from-me';
         message.className = 'a-inner from-me-color';
@@ -214,7 +222,15 @@ function createBigChat(historyElement) {
     let nDate = new Date(date);
     dateElem.innerHTML = nDate;
     message.className = 'a-inner';
-    message.innerHTML = historyElement.body;
+    if (historyElement.attachments) {
+        message.innerHTML = messageTypesHelper(historyElement.attachments);
+    } else if (historyElement.action) {
+        if (historyElement.action == 'chat_create') {
+            message.innerHTML = 'cteate chat ' + historyElement.action_text;
+        }
+    } else {
+        message.innerHTML = parseMessageForLink(historyElement.body);
+    }
     if (historyElement.from_id == userId) {
         div.className = 'a-message-from-me';
         message.className = 'a-inner from-me-color';
@@ -223,10 +239,13 @@ function createBigChat(historyElement) {
     for (let i = 0; i < u.length; i++) {
         if (uid == u[i]['id']) {
             // fromUser.innerHTML = u[i]['first_name']+ ' ' + u[i]['last_name'];
-            fromUser.src = u[i]['photo']
+            fromUser.src = u[i]['photo'];
+            fromUser.className = 'user-photo-chat';
         }
     }
-    div.appendChild(fromUser)
+    if (historyElement.from_id != userId) {
+        div.appendChild(fromUser)
+    }
 
     div.appendChild(message);
     return div;
@@ -396,7 +415,6 @@ jQuery('.right-menu-content').on('scroll', function() {
             let page = jQuery(param).attr('pagination');
             jQuery(param).attr('pagination', parseInt(page) + 50);
             loadMoreChatMessageHistory(chat.chatId, page);
-            console.log(chat.chatId);
         }
     }
 })
@@ -408,3 +426,37 @@ jQuery('.left-menu').on('scroll', function() {
         jQuery('.left-menu').attr('pagination', parseInt(page) + 20);
     }
 })
+
+
+function messageTypesHelper(attachment) {
+    let type = attachment[0]['type'];
+    if (type == 'photo') {
+        return '<a href=' + attachment[0]['photo']['photo_1280'] + ' target="_blank">' +
+                '<img src=' + attachment[0]['photo']['photo_604'] + ' class="attachment-img"></a>'
+    } else if (type == 'link') {
+        return '<a href=' + attachment[0]['link']['url'] + ' target="_blank">outlink: '+ attachment[0]['link']['title'] +'</a>'
+    }
+}
+
+function makeLink(element) {
+    return '<a href=' + element + ' target="_blank">' + element + '</a>';
+}
+
+function parseMessageForLink(messageText) {
+    let text = '';
+    let url_pattern = /\.(?=[a-zA-Z])/;
+    let a = messageText.split(' ');
+    for (let el of a) {
+        if (a.length != 1)
+            el = el.replace(',','')
+        let score = el.search(url_pattern);
+        if (score > 0) {
+            let link = makeLink(el);
+            text += link + ' ';
+        } else {
+            text += el + ' ';
+        }
+    }
+    return text;
+}
+// console.log(parseMessageForLink('https://desktop.telegram.org/ www.you.ru'))
