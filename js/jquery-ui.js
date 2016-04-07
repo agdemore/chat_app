@@ -47,6 +47,7 @@ $(window).resize(function() {
         $('.right-menu').addClass('right-menu-min');
 
         $('.show-left-menu').show();
+        $('.tools-wrapper').css('width', '100%');
     } else if (wWidth >= 900) {
         if ($('.left-top').hasClass('hide-element'))
             $('.left-top').removeClass('hide-element');
@@ -58,6 +59,7 @@ $(window).resize(function() {
             $('.right-menu').removeClass('right-menu-min');
         $('.show-left-menu').hide();
         $('.left-menu').removeClass('west-cost-custom-width');
+        $('.tools-wrapper').css('width', '65%');
     }
 });
 
