@@ -397,6 +397,7 @@ function sendMessage(userId) {
             } else {
                 console.log('ok');
                 jQuery('#message-text').val('');
+                loadUserMessageHistory(userId, '0')
             }
         })
     }
@@ -475,3 +476,11 @@ function parseMessageForLink(messageText) {
     return text;
 }
 // console.log(parseMessageForLink('https://desktop.telegram.org/ www.you.ru'))
+
+
+function sendByEnter() {
+    if (event.keyCode == 13) {
+      sendMessage(user.userId);
+    }
+    return true;
+}
