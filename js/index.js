@@ -35,19 +35,19 @@ function getFriends() {
 function createListOfFriends() {
     getFriends()
         .then(friends => {
-            let toWrite = [];
+            let toWrite = {};
             for (let i = 0; i < friends.length; i++) {
                 let uid = friends[i]['id'];
                 let firstName = friends[i]['first_name'];
                 let lastName = friends[i]['last_name'];
                 let photoUrl = friends[i]['photo_50']
-                let elem = {
-                    'id': uid,
-                    'first_name': firstName,
-                    'last_name': lastName,
-                    'photo': photoUrl
+                // let elem = {};
+                toWrite[uid] = {
+                        'first_name': firstName,
+                        'last_name': lastName,
+                        'photo': photoUrl
                 };
-                toWrite.push(elem);
+                // toWrite.push(elem);
             }
             fs.writeFileSync(__dirname + '/friends_data.json', JSON.stringify(toWrite));
         })
@@ -169,6 +169,14 @@ function clearChat() {
     }
 }
 
+function clearDialogs() {
+    let div = document.getElementById('dialogs');
+    let msgs = div.getElementsByTagName('li');
+    for (let i = msgs.length - 1; i >= 0; i--) {
+        div.removeChild(msgs[i]);
+    }
+}
+
 
 function loadChatHistory(chatId, offset) {
     return new Promise((resolve, reject) => {
@@ -238,13 +246,13 @@ function createBigChat(historyElement) {
         message.className = 'a-inner from-me-color';
     }
     let uid = historyElement['from_id'];
-    for (let i = 0; i < u.length; i++) {
-        if (uid == u[i]['id']) {
+    // for (let i = 0; i < u.length; i++) {
+        // if (uid == u[i]['id']) {
             // fromUser.innerHTML = u[i]['first_name']+ ' ' + u[i]['last_name'];
-            fromUser.src = u[i]['photo'];
+            fromUser.src = u[uid]['photo'];
             fromUser.className = 'user-photo-chat';
-        }
-    }
+        // }
+    // }
     if (historyElement.from_id != userId) {
         div.appendChild(fromUser)
     }
@@ -323,21 +331,19 @@ function createMessage(dialogElement) {
     // ------------------ add message name or chat name ------------------------
     let u = JSON.parse(fs.readFileSync(__dirname + '/friends_data.json'));
     if (dialogElement['message']['user_id'] && dialogElement['message']['title'] == ' ... ') {
-        let uid = dialogElement['message']['user_id'];
-        for (let i = 0; i < u.length; i++) {
-            if (uid == u[i]['id']) {
-                let messageName = u[i]['first_name']+ ' ' + u[i]['last_name'];
-                let p = u[i]['photo']
-                userInfo.innerHTML = messageName;
-                img.src = p;
-                li.setAttribute('onclick', 'loadUserMessageHistory("' + u[i]['id'] + '", "0");');
-                li.setAttribute('user_id', u[i]['id']);
-                li.setAttribute('pagination', '50');
-                // li.id = 'message';
-            } else if (uid != u[i]['id']) {
-                // let messageUserId = uid;
-                // userInfo.innerHTML = messageUserId;
-            }
+        let uid = String(dialogElement['message']['user_id']);
+        if (u[uid]) {
+            let messageName = u[uid]['first_name']+ ' ' + u[uid]['last_name'];
+            let p = u[uid]['photo']
+            userInfo.innerHTML = messageName;
+            img.src = p;
+            li.setAttribute('onclick', 'loadUserMessageHistory("' + uid + '", "0");');
+            li.setAttribute('user_id', uid);
+            li.setAttribute('pagination', '50');
+            // li.id = 'message';
+        } else {
+            // let messageUserId = uid;
+            // userInfo.innerHTML = messageUserId;
         }
     } else if (dialogElement['message']['chat_id']){
         let chatName = dialogElement['message']['title'];
@@ -346,11 +352,11 @@ function createMessage(dialogElement) {
             chatName = chatName.substr(0, 20) + '...';
         }
         userInfo.innerHTML = chatName;
-        for (let i = 0; i < u.length; i++) {
-            if (uid == u[i]['id']) {
-                let chatLastSender = u[i]['first_name']+ ' ' + u[i]['last_name'];
+        // for (let i = 0; i < u.length; i++) {
+            if (u[uid]) {
+                let chatLastSender = u[uid]['first_name']+ ' ' + u[uid]['last_name'];
             }
-        }
+        // }
         li.setAttribute('onclick', 'loadChatMessageHistory("' + dialogElement['message']['chat_id'] + '", "0");');
         li.setAttribute('chat_id', dialogElement['message']['chat_id']);
         li.setAttribute('pagination', '50');
@@ -371,6 +377,9 @@ function createMessage(dialogElement) {
 }
 
 function createDialogsUi(offset) {
+    if (offset == '0') {
+        clearDialogs();
+    }
     getDialogs(offset)
         .then(dialogs => {
             console.log('dialogs :', dialogs);
@@ -549,41 +558,41 @@ function getUpdates() {
                     if (updates[i].length > 3) {
                         let uid = updates[i][3];
                     }
-                    console.log('make flags', mask);
+                    console.log('make flags', mask, 'at', mid);
                 } else if (code == 3) {
                     let mid = updates[i][1];
                     let mask = updates[i][2];
                     if (updates[i].length > 3) {
                         let uid = updates[i][3];
                     }
-                    console.log('clear flask', mask);
+                    console.log('clear flags', mask, 'at', mid);
                 } else if (code == 4) {
                     let mid = updates[i][1];
                     let flag = updates[i][2];
-                    let from_uid = updates[i][3] * (-1);
+                    let from_uid = updates[i][3] ;
                     let timestamp = updates[i][4];
                     let subject = updates[i][5];
                     let text = updates[i][6];
                     let attachment = updates[i][7];
                     if (user.userId == from_uid) {
-                        loadUserMessageHistory(from_uid, '0')
+                        loadUserMessageHistory(from_uid, '0');
                         createDialogsUi('0');
                     } else {
                         createDialogsUi('0');
                     }
-                    console.log('message from', uid, 'text:', text);
+                    console.log('message from', u[uid]['first_name'], u[uid]['last_name'], 'text:', text);
                 } else if (code == 8) {
                     let uid = updates[i][1] * (-1);
-                    console.log('user', uid, 'online');
+                    console.log('user', u[uid]['first_name'], u[uid]['last_name'] , 'online');
                 } else if (code == 9) {
                     let uid = updates[i][1] * (-1);
-                    console.log('user', uid, 'offline');
+                    console.log('user', u[uid]['first_name'], u[uid]['last_name'], 'offline');
                 } else if (code == 51) {
                     console.log('??? some shit ???');
                 } else if (code == 61) {
-                    let uid = updates[i][1] * (-1);
+                    let uid = updates[i][1]; // * (-1);
                     let flag = updates[i][2];
-                    console.log(uid, 'is typing');
+                    console.log(u[uid]['first_name'], u[uid]['last_name'], 'is typing');
                 } else if (code == 62) {
                     let uid = updates[i][1] * (-1);
                     let chat_id = updates[i][2];
