@@ -6,6 +6,7 @@ let vkAuth = require('./vk_auth');
 let fs = require('fs');
 let Promise = require('promise');
 let jQuery = require('jquery');
+let async1 = require('async');
 
 vkAuth.authenticate();
 
@@ -398,6 +399,7 @@ function sendMessage(userId) {
                 console.log('ok');
                 jQuery('#message-text').val('');
                 loadUserMessageHistory(userId, '0')
+                createDialogsUi('0');
             }
         })
     }
@@ -475,7 +477,6 @@ function parseMessageForLink(messageText) {
     }
     return text;
 }
-// console.log(parseMessageForLink('https://desktop.telegram.org/ www.you.ru'))
 
 
 function sendByEnter() {
@@ -484,3 +485,116 @@ function sendByEnter() {
     }
     return true;
 }
+
+
+function getLongPollParameters() {
+    return new Promise((resolve, reject) => {
+        request({
+            url: 'https://api.vk.com/method/messages.getLongPollServer?access_token=' + accessToken + '&v=5.50'
+        }, function(error, response, body) {
+            if (error) {
+                reject(error);
+            } else {
+                let answerJson = JSON.parse(response.body);
+                let answer = answerJson.response;
+                resolve(answer);
+                fs.writeFileSync(__dirname + '/long_poll.json', JSON.stringify({'server': answer.server, 'key': answer.key}));
+                fs.writeFileSync(__dirname + '/long_poll_ts.json', JSON.stringify({'ts': answer.ts}));
+            }
+        })
+    })
+
+}
+function getUpdatesFromLongPollServer(server, key, ts) {
+    return new Promise((resolve, reject) => {
+        request({
+            url: 'https://'+ server +'?act=a_check&key=' + key + '&ts=' + ts + '&wait=25&mode=2'
+        }, function(error, response, body) {
+            if (error) {
+                reject(error);
+            } else {
+                let answerJson = JSON.parse(response.body);
+                // let answer = answerJson.response;
+                // console.log(answerJson);
+                resolve(answerJson);
+            }
+        })
+
+    })
+}
+
+let longPollParams = JSON.parse(fs.readFileSync(__dirname + '/long_poll.json'));
+let u = JSON.parse(fs.readFileSync(__dirname + '/friends_data.json'));
+
+function getUpdates() {
+    let tsParam = JSON.parse(fs.readFileSync(__dirname + '/long_poll_ts.json'));
+    getUpdatesFromLongPollServer(longPollParams.server, longPollParams.key, tsParam.ts)
+        .then(answer => {
+            // console.log(answer);
+            fs.writeFileSync(__dirname + '/long_poll_ts.json', JSON.stringify({'ts': answer.ts}));
+            let updates = answer.updates;
+            for (let i = 0; i < updates.length; i++) {
+                let code = updates[i][0];
+                if (code == 0) {
+                    let mid = updates[i][1];
+                    let flag = updates[i][2];
+                    console.log('delete message', mid);
+                } else if (code == 1) {
+                    let mid = updates[i][1];
+                    let flag = updates[i][2];
+                    console.log('replace flags', flags, 'from', mid);
+                } else if (code == 2) {
+                    let mid = updates[i][1];
+                    let mask = updates[i][2];
+                    if (updates[i].length > 3) {
+                        let uid = updates[i][3];
+                    }
+                    console.log('make flags', mask);
+                } else if (code == 3) {
+                    let mid = updates[i][1];
+                    let mask = updates[i][2];
+                    if (updates[i].length > 3) {
+                        let uid = updates[i][3];
+                    }
+                    console.log('clear flask', mask);
+                } else if (code == 4) {
+                    let mid = updates[i][1];
+                    let flag = updates[i][2];
+                    let from_uid = updates[i][3] * (-1);
+                    let timestamp = updates[i][4];
+                    let subject = updates[i][5];
+                    let text = updates[i][6];
+                    let attachment = updates[i][7];
+                    if (user.userId == from_uid) {
+                        loadUserMessageHistory(from_uid, '0')
+                        createDialogsUi('0');
+                    } else {
+                        createDialogsUi('0');
+                    }
+                    console.log('message from', uid, 'text:', text);
+                } else if (code == 8) {
+                    let uid = updates[i][1] * (-1);
+                    console.log('user', uid, 'online');
+                } else if (code == 9) {
+                    let uid = updates[i][1] * (-1);
+                    console.log('user', uid, 'offline');
+                } else if (code == 51) {
+                    console.log('??? some shit ???');
+                } else if (code == 61) {
+                    let uid = updates[i][1] * (-1);
+                    let flag = updates[i][2];
+                    console.log(uid, 'is typing');
+                } else if (code == 62) {
+                    let uid = updates[i][1] * (-1);
+                    let chat_id = updates[i][2];
+                    console.log(uid, 'is typing in', chat_id);
+                } else if (code == 70) {
+                    console.log('phone call???');
+                }
+            }
+        })
+}
+
+getLongPollParameters();
+
+setInterval(getUpdates, 5000);
