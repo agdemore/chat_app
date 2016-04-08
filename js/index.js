@@ -247,11 +247,11 @@ function createBigChat(historyElement) {
     }
     let uid = historyElement['from_id'];
     // for (let i = 0; i < u.length; i++) {
-        // if (uid == u[i]['id']) {
+        if (u[uid]) {
             // fromUser.innerHTML = u[i]['first_name']+ ' ' + u[i]['last_name'];
             fromUser.src = u[uid]['photo'];
             fromUser.className = 'user-photo-chat';
-        // }
+        }
     // }
     if (historyElement.from_id != userId) {
         div.appendChild(fromUser)
