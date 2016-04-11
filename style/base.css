@@ -135,6 +135,10 @@ body {
 }
 .user-name {
     float: left;
+    width: 150px;
+    height: 18px;
+    overflow: hidden;
+    text-align: left;
 }
 .date {
     float: right;
@@ -143,8 +147,14 @@ body {
     clear: left;
     text-align: left;
     padding: 7px 0;
+    height: 18px;
+    overflow: hidden;
 }
-
+.mess p {
+    height: 18px;
+    overflow: hidden;
+    margin: 0;
+}
 
 .tools {
 
@@ -367,5 +377,7 @@ img.attachment-img {
     padding: 10px 0;
 }
 .top-title-inner-content {
-
+    height: 18px;
+    overflow: hidden;
+    margin: 0;
 }
