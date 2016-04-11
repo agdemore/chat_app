@@ -357,3 +357,15 @@ img.attachment-img {
 .chat div p.attach-link-dicsription {
     border: 0;
 }
+
+
+.top-title {
+    height: 100%;
+    text-align: center;
+}
+.top-title-inner {
+    padding: 10px 0;
+}
+.top-title-inner-content {
+
+}
