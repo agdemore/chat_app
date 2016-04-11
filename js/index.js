@@ -79,10 +79,28 @@ function loadUserMessageHistory(userId, offset) {
             clearChat();
             createChatUi(history);
             jQuery('.right-menu-content').scrollTop(jQuery('.right-menu-content')[0].scrollHeight);
+            addUserNameToTop();
         })
 }
 
+function addUserNameToTop() {
+    if (user.userId) {
+        let uName = u[user.userId]['first_name']+ ' ' + u[user.userId]['last_name'];
+        jQuery('.top-title-inner-content').text(uName);
+    } else if (chat.chatId) {
+        let param = "[ chat_id = '" + chat.chatId + "']";
+        jQuery('.top-title-inner-content').text(jQuery(param).attr('chat_name'));
+        console.log(param);
+    } else {
 
+        if (jQuery('.message').attr('user_id')) {
+            let uName = u[jQuery('.message').attr('user_id')]['first_name']+ ' ' + u[jQuery('.message').attr('user_id')]['last_name'];
+            jQuery('.top-title-inner-content').text(uName);
+        } else if (jQuery('.message').attr('chat_id')) {
+            jQuery('.top-title-inner-content').text(jQuery('.message').attr('chat_name'));
+        }
+    }
+}
 
 // add to .chat attribute that will show pagination
 function loadMoreUserMessageHistory(userId, startMessage) {
@@ -203,6 +221,7 @@ function loadChatMessageHistory(chatId, offset) {
             clearChat();
             createBigChatUi(history);
             jQuery('.right-menu-content').scrollTop(jQuery('.right-menu-content')[0].scrollHeight);
+            addUserNameToTop();
         })
 }
 function loadMoreChatMessageHistory(chatId, offset) {
@@ -310,10 +329,7 @@ function createMessage(dialogElement) {
         mess.innerHTML = dialogElement['message']['attachments'][0]['type']
     } else {
         let messageBody = dialogElement['message']['body'];
-        if (messageBody.length > 20) {
-            messageBody = messageBody.substr(0, 20) + '...';
-        }
-        mess.innerHTML = messageBody;
+        mess.innerHTML = '<p>' + messageBody + '</p>';
     }
 
     if (dialogElement['message']['read_state'] == 0) {
@@ -348,9 +364,6 @@ function createMessage(dialogElement) {
     } else if (dialogElement['message']['chat_id']){
         let chatName = dialogElement['message']['title'];
         let uid = dialogElement['message']['user_id'];
-        if (chatName.length > 20) {
-            chatName = chatName.substr(0, 20) + '...';
-        }
         userInfo.innerHTML = chatName;
         // for (let i = 0; i < u.length; i++) {
             if (u[uid]) {
@@ -360,6 +373,7 @@ function createMessage(dialogElement) {
         li.setAttribute('onclick', 'loadChatMessageHistory("' + dialogElement['message']['chat_id'] + '", "0");');
         li.setAttribute('chat_id', dialogElement['message']['chat_id']);
         li.setAttribute('pagination', '50');
+        li.setAttribute('chat_name', dialogElement['message']['title']);
     }
     //--------------------------------------------------------------------------
     photoLi.appendChild(img);
@@ -389,6 +403,9 @@ function createDialogsUi(offset) {
                 dialogList.appendChild(createMessage(dialogs[i]));
             }
         })
+        .then(() => {
+            loadUserMessageHistory(jQuery('.message').attr('user_id'), '0');
+        })
 }
 
 
@@ -414,7 +431,7 @@ function sendMessage(userId) {
     }
 }
 
-
+//on start main()
 createListOfFriends();
 createDialogsUi('0');
 
@@ -539,7 +556,7 @@ function getUpdates() {
     let tsParam = JSON.parse(fs.readFileSync(__dirname + '/long_poll_ts.json'));
     getUpdatesFromLongPollServer(longPollParams.server, longPollParams.key, tsParam.ts)
         .then(answer => {
-            // console.log(answer);
+            console.log(answer);
             fs.writeFileSync(__dirname + '/long_poll_ts.json', JSON.stringify({'ts': answer.ts}));
             let updates = answer.updates;
             for (let i = 0; i < updates.length; i++) {
