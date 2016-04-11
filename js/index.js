@@ -91,14 +91,13 @@ function addUserNameToTop() {
         let param = "[ chat_id = '" + chat.chatId + "']";
         jQuery('.top-title-inner-content').text(jQuery(param).attr('chat_name'));
         console.log(param);
+    } else if (jQuery('.message').attr('user_id')) {
+        let uName = u[jQuery('.message').attr('user_id')]['first_name']+ ' ' + u[jQuery('.message').attr('user_id')]['last_name'];
+        jQuery('.top-title-inner-content').text(uName);
+    } else if (jQuery('.message').attr('chat_id')) {
+        jQuery('.top-title-inner-content').text(jQuery('.message').attr('chat_name'));
     } else {
 
-        if (jQuery('.message').attr('user_id')) {
-            let uName = u[jQuery('.message').attr('user_id')]['first_name']+ ' ' + u[jQuery('.message').attr('user_id')]['last_name'];
-            jQuery('.top-title-inner-content').text(uName);
-        } else if (jQuery('.message').attr('chat_id')) {
-            jQuery('.top-title-inner-content').text(jQuery('.message').attr('chat_name'));
-        }
     }
 }
 
@@ -281,6 +280,28 @@ function createBigChat(historyElement) {
 }
 
 
+function getUser(uid) {
+    return new Promise((resolve, reject) => {
+        request({
+            url: 'https://api.vk.com/method/users.get?user_ids='+ uid +'&v=5.33'
+        }, function(error, response, body) {
+            if (error) {
+                reject(error);
+            } else {
+                let userDataJson = JSON.parse(response.body);
+                let userData = userDataJson.response.items;
+                resolve(userData);
+            }
+        });
+    })
+}
+
+function saveUserIfNotInFriends(uid) {
+    getUser(uid)
+        .then(userData => {
+            console.log(userData);
+        })
+}
 
 
 function getDialogs(offset) {
@@ -358,6 +379,10 @@ function createMessage(dialogElement) {
             li.setAttribute('pagination', '50');
             // li.id = 'message';
         } else {
+            li.setAttribute('onclick', 'loadUserMessageHistory("' + uid + '", "0");');
+            li.setAttribute('user_id', uid);
+            li.setAttribute('pagination', '50');
+            saveUserIfNotInFriends(uid);
             // let messageUserId = uid;
             // userInfo.innerHTML = messageUserId;
         }
