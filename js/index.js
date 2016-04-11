@@ -122,9 +122,18 @@ function createChatUi(history) {
 }
 function addSendLogic() {
     let btn = document.getElementById('send-message');
+
     if (btn.hasAttribute('onclick')) {
         btn.removeAttribute('onclick');
-        btn.setAttribute('onclick', 'sendMessage("' + user.userId + '");');
+        if (user.userId) {
+            btn.setAttribute('onclick', 'sendMessage("' + user.userId + '");');
+        } else if (chat.chatId) {
+            btn.setAttribute('onclick', 'sendMessage("' + chat.chatId + '");');
+        } else if (jQuery('.message').attr('user_id')) {
+            btn.setAttribute('onclick', 'sendMessage("' + jQuery('.message').attr('user_id') + '");');
+        } else if (jQuery('.message').attr('chat_id')) {
+            btn.setAttribute('onclick', 'sendMessage("' + jQuery('.message').attr('chat_id') + '");');
+        }
     } else {
         btn.setAttribute('onclick', 'sendMessage("' + user.userId + '");');
     }
@@ -622,6 +631,8 @@ function getUpdates() {
                     } else {
                         createDialogsUi('0');
                     }
+                    let fromUser = u[uid]['first_name'] + ' ' + u[uid]['last_name'];
+                    new Notification(fromUser, text);
                     console.log('message from', u[uid]['first_name'], u[uid]['last_name'], 'text:', text);
                 } else if (code == 8) {
                     let uid = updates[i][1] * (-1);
