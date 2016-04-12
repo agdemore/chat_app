@@ -11,6 +11,12 @@ const Menu = electron.Menu;
 var mainWindow = null;
 let appIcon = null;
 
+if (process.platform != 'darwin') {
+
+} else if (process.platform === 'darwin') {
+    app.dock.setIcon(__dirname + '/icon/vk-64-w.png')
+}
+
 app.on('window-all-closed', function() {
   	if (process.platform != 'darwin') {
   	  app.quit();
