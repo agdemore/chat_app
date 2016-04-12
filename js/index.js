@@ -7,6 +7,7 @@ let fs = require('fs');
 let Promise = require('promise');
 let jQuery = require('jquery');
 let async1 = require('async');
+let notifier = require('node-notifier')
 
 vkAuth.authenticate();
 
@@ -657,6 +658,9 @@ function getUpdates() {
                     let fromUser = u[uid]['first_name'] + ' ' + u[uid]['last_name'];
                     new Notification(fromUser, text);
                     console.log('message from', u[uid]['first_name'], u[uid]['last_name'], 'text:', text);
+                    if (uid != userId) {
+                        createNotification('message from ' +u[uid]['first_name'] + ' ' + u[uid]['last_name'], text);
+                    }
                 } else if (code == 8) {
                     let uid = updates[i][1] * (-1);
                     console.log('user', u[uid]['first_name'], u[uid]['last_name'] , 'online');
@@ -686,7 +690,15 @@ function showInfoU(uU) {
     saveUserIfNotInFriends(uids);
 }
 
-
+function createNotification(title, message) {
+    notifier.notify({
+        title: title,
+        message: message,
+        icon: __dirname + '/icon/vk-128-b.png',
+        sound: true,
+        wait: false
+    });
+}
 
 
 getLongPollParameters();
