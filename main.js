@@ -40,6 +40,7 @@ app.on('ready', function() {
 
     appIcon = new Tray(__dirname + '/icon/vk-16-b.png');
     let contextMenu = Menu.buildFromTemplate([
+        { label: 'Open vk-chat', click: () => { mainWindow.show() }},
         { label: 'Minimize to tray', click: () => { mainWindow.minimize() }},
         { label: 'Quit', click: () => { app.quit() }}
     ]);
