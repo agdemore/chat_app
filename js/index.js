@@ -292,24 +292,34 @@ function createBigChat(historyElement) {
 function getUser(uid) {
     return new Promise((resolve, reject) => {
         request({
-            url: 'https://api.vk.com/method/users.get?user_ids='+ uid +'&v=5.33'
+            url: 'https://api.vk.com/method/users.get?user_ids='+ uid +'&fields=photo_50&v=5.33'
         }, function(error, response, body) {
             if (error) {
                 reject(error);
             } else {
                 let userDataJson = JSON.parse(response.body);
-                let userData = userDataJson.response.items;
+                let userData = userDataJson.response;
                 resolve(userData);
             }
         });
     })
 }
-
+let unknownUsers = [];
 function saveUserIfNotInFriends(uid) {
     getUser(uid)
         .then(userData => {
             console.log(userData);
+            let toWrite = {}
+            for (let i = 0; i < userData.length; i++) {
+                toWrite[userData[i].id] = {
+                        'first_name': userData[i].first_name,
+                        'last_name': userData[i].last_name,
+                        'photo': userData[i].photo_50
+                };
+            }
+            fs.writeFileSync(__dirname + '/unknown_users_data.json', JSON.stringify(toWrite));
         })
+
 }
 
 
@@ -376,6 +386,7 @@ function createMessage(dialogElement) {
 
     // ------------------ add message name or chat name ------------------------
     let u = JSON.parse(fs.readFileSync(__dirname + '/friends_data.json'));
+    let unknowU = JSON.parse(fs.readFileSync(__dirname + '/unknown_users_data.json'));
     if (dialogElement['message']['user_id'] && dialogElement['message']['title'] == ' ... ') {
         let uid = String(dialogElement['message']['user_id']);
         if (u[uid]) {
@@ -391,7 +402,14 @@ function createMessage(dialogElement) {
             li.setAttribute('onclick', 'loadUserMessageHistory("' + uid + '", "0");');
             li.setAttribute('user_id', uid);
             li.setAttribute('pagination', '50');
-            saveUserIfNotInFriends(uid);
+            unknownUsers.push(uid);
+            if(unknowU[uid]){
+                let messageName = unknowU[uid]['first_name']+ ' ' + unknowU[uid]['last_name'];
+                let p = unknowU[uid]['photo']
+                userInfo.innerHTML = messageName;
+                img.src = p;
+            }
+            // saveUserIfNotInFriends(uid);
             // let messageUserId = uid;
             // userInfo.innerHTML = messageUserId;
         }
@@ -438,7 +456,12 @@ function createDialogsUi(offset) {
             }
         })
         .then(() => {
-            loadUserMessageHistory(jQuery('.message').attr('user_id'), '0');
+            if (jQuery('.message').attr('user_id')) {
+                loadUserMessageHistory(jQuery('.message').attr('user_id'), '0');
+            } else if (jQuery('.message').attr('chat_id')) {
+                loadChatMessageHistory(jQuery('.message').attr('chat_id'), '0');
+            }
+            showInfoU(unknownUsers);
         })
 }
 
@@ -656,6 +679,15 @@ function getUpdates() {
             }
         })
 }
+
+function showInfoU(uU) {
+    let uids = uU.join();
+    console.log(uids);
+    saveUserIfNotInFriends(uids);
+}
+
+
+
 
 getLongPollParameters();
 
