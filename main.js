@@ -15,6 +15,7 @@ if (process.platform != 'darwin') {
 
 } else if (process.platform === 'darwin') {
     app.dock.setIcon(__dirname + '/icon/vk-64-w.png')
+    // app.dock.setBadge('.');
 }
 
 app.on('window-all-closed', function() {
@@ -77,6 +78,11 @@ app.on('ready', function() {
 		mainWindow.loadURL('file://' + __dirname + '/index.html');
 	});
 
+    ipcMain.on('countOfUnreadMessages', function(event, arg) {
+        if (arg != '0') {
+            app.dock.setBadge(arg);
+        }
+    });
 
 	// ipcMain.on('ready-to-create-dialogs-list', function(event, arg) {
 	// 	event.sender.send('create-dialogs-list', dialogs, at);
