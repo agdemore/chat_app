@@ -1,5 +1,6 @@
 'use strict';
 
+
 const ipcRenderer = require('electron').ipcRenderer;
 var request = require('request');
 let vkAuth = require('./vk_auth');
@@ -340,6 +341,9 @@ function getDialogs(offset) {
     })
 }
 
+let unreadMessages = 0;
+let unreadMessagesIds = []; // <--------------------------- set messages read state!!!!
+
 function createMessage(dialogElement) {
     // create message element
     var li = document.createElement('li'); // <------- replace li to div
@@ -378,6 +382,7 @@ function createMessage(dialogElement) {
     }
     if (dialogElement['unread']) {
         dateSpan.innerHTML = '+' + dialogElement['unread'].toString();
+        unreadMessages = unreadMessages + dialogElement['unread'];
     } else {
         dateSpan.innerHTML = normalDate.toLocaleDateString();
     }
@@ -463,7 +468,9 @@ function createDialogsUi(offset) {
                 loadChatMessageHistory(jQuery('.message').attr('chat_id'), '0');
             }
             showInfoU(unknownUsers);
+            ipcRenderer.send('countOfUnreadMessages', String(unreadMessages));
         })
+
 }
 
 
@@ -666,7 +673,12 @@ function getUpdates() {
                     console.log('user', u[uid]['first_name'], u[uid]['last_name'] , 'online');
                 } else if (code == 9) {
                     let uid = updates[i][1] * (-1);
-                    console.log('user', u[uid]['first_name'], u[uid]['last_name'], 'offline');
+                    let flag = updates[i][2]
+                    if (flag == 0) {
+                        console.log('user', u[uid]['first_name'], u[uid]['last_name'], 'offline');
+                    } else if (flag == 1) {
+
+                    }
                 } else if (code == 51) {
                     console.log('??? some shit ???');
                 } else if (code == 61) {
