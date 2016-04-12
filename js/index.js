@@ -456,7 +456,7 @@ function createDialogsUi(offset) {
         .then(dialogs => {
             console.log('dialogs :', dialogs);
             let dialogList = document.getElementById('dialogs');
-            let u = JSON.parse(fs.readFileSync(__dirname + '/friends_data.json'));
+            // let u = JSON.parse(fs.readFileSync(__dirname + '/friends_data.json'));
             for (let i = 0; i < dialogs.length; i++) {
                 dialogList.appendChild(createMessage(dialogs[i]));
             }
@@ -498,7 +498,7 @@ function sendMessage(userId) {
 
 //on start main()
 createListOfFriends();
-createDialogsUi('0');
+// createDialogsUi('0');
 
 
 // load-more-messages-with-jQuery action on scroll
@@ -589,8 +589,8 @@ function getLongPollParameters() {
                 let answerJson = JSON.parse(response.body);
                 let answer = answerJson.response;
                 resolve(answer);
-                fs.writeFileSync(__dirname + '/long_poll.json', JSON.stringify({'server': answer.server, 'key': answer.key}));
-                fs.writeFileSync(__dirname + '/long_poll_ts.json', JSON.stringify({'ts': answer.ts}));
+                // fs.writeFileSync(__dirname + '/long_poll.json', JSON.stringify({'server': answer.server, 'key': answer.key}));
+                // fs.writeFileSync(__dirname + '/long_poll_ts.json', JSON.stringify({'ts': answer.ts}));
             }
         })
     })
@@ -614,10 +614,11 @@ function getUpdatesFromLongPollServer(server, key, ts) {
     })
 }
 
-let longPollParams = JSON.parse(fs.readFileSync(__dirname + '/long_poll.json'));
+// let longPollParams = JSON.parse(fs.readFileSync(__dirname + '/long_poll.json'));
 let u = JSON.parse(fs.readFileSync(__dirname + '/friends_data.json'));
 
 function getUpdates() {
+    let longPollParams = JSON.parse(fs.readFileSync(__dirname + '/long_poll.json'));
     let tsParam = JSON.parse(fs.readFileSync(__dirname + '/long_poll_ts.json'));
     getUpdatesFromLongPollServer(longPollParams.server, longPollParams.key, tsParam.ts)
         .then(answer => {
@@ -712,7 +713,14 @@ function createNotification(title, message) {
     });
 }
 
+function getLongPoll() {
+    getLongPollParameters()
+        .then(answer => {
+            fs.writeFileSync(__dirname + '/long_poll.json', JSON.stringify({'server': answer.server, 'key': answer.key}));
+            fs.writeFileSync(__dirname + '/long_poll_ts.json', JSON.stringify({'ts': answer.ts}));
+        })
+}
+getLongPoll();
+createDialogsUi('0');
 
-getLongPollParameters();
-
-setInterval(getUpdates, 5000);
+setInterval(getUpdates, 2000);
