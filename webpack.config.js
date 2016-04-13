@@ -1,7 +1,12 @@
+'use strict';
+
+
 var webpack = require('webpack');
 
+const path = require('path');
+
 module.exports = {
-  context: __dirname +  '/js',
+  context: path.resolve(__dirname) +  '/js',
   target: 'electron',
   entry: './entry.js',
 
@@ -9,15 +14,32 @@ module.exports = {
     filename: 'bundle.js',
     path: __dirname + '/build'
   },
-
+  resolve: {
+    extensions: ['', '.js', '.jsx']
+  },
   module: {
     loaders: [
         {
-            test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/,
+            test: /\.js$/,
+            loader: ['babel-loader'],
+            exclude: /node_modules/,
             query:
             {
-                presets: ['es2015', 'react']
+                presets: ['es2015', "stage-0", 'react']
             }
+        },
+        {
+            test: /\.jsx$/,
+            loaders: ['babel-loader'],
+            exclude: /node_modules/,
+            query:
+            {
+                presets: ['es2015', "stage-0", 'react']
+            }
+        },
+        {
+            test: /\.json$/,
+            loader: "json-loader"
         }
     ]
   }
