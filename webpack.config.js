@@ -8,6 +8,10 @@ const path = require('path');
 module.exports = {
   context: path.resolve(__dirname) +  '/js',
   target: 'electron',
+  node: {
+      __dirname: false,
+      __filename: false,
+  },
   entry: './entry.js',
 
   output: {
