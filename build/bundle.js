@@ -49102,14 +49102,13 @@
 /* 286 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(__dirname) {'use strict';
+	'use strict';
 
 	var request = __webpack_require__(158).defaults({ jar: true });
 	var htmlParser = __webpack_require__(287);
 	var Promise = __webpack_require__(323);
 	var fs = __webpack_require__(236);
 
-	console.log('dir', __dirname);
 	var userData = JSON.parse(fs.readFileSync(__dirname + '/user_data.json'));
 	var data = JSON.parse(fs.readFileSync(__dirname + '/data.json'));
 	var clientId = data.client_id;
@@ -49225,7 +49224,6 @@
 	}
 
 	module.exports.authenticate = authenticate;
-	/* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ },
 /* 287 */
@@ -70235,7 +70233,7 @@
 /* 361 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(__dirname) {/**
+	/**
 	 * A Node.js wrapper for terminal-notify (with fallback).
 	 */
 	var path = __webpack_require__(196),
@@ -70318,7 +70316,6 @@
 	  return { _ref: 'val' };
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ },
 /* 362 */
@@ -70841,7 +70838,7 @@
 /* 366 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(__dirname) {/**
+	/**
 	 * Wrapper for the toaster (https://github.com/nels-o/toaster)
 	 */
 	var path = __webpack_require__(196),
@@ -70910,13 +70907,12 @@
 	  return this;
 	};
 
-	/* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ },
 /* 367 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(__dirname) {/**
+	/**
 	 * Wrapper for the notifu 1.6 (http://www.paralint.com/projects/notifu/)
 
 	Usage
@@ -71067,7 +71063,6 @@
 	  }
 	}
 
-	/* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ }
 /******/ ]);
