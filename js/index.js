@@ -625,6 +625,11 @@ function getUpdates() {
             console.log(answer);
             fs.writeFileSync(__dirname + '/long_poll_ts.json', JSON.stringify({'ts': answer.ts}));
             let updates = answer.updates;
+            if (answer.failed) {
+                if (answer.failed == 2) {
+                    location.reload();
+                }
+            }
             for (let i = 0; i < updates.length; i++) {
                 let code = updates[i][0];
                 if (code == 0) {
