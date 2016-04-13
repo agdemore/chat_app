@@ -4,7 +4,8 @@
   "description": "unofficial vk chat for desktop",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "./node_modules/.bin/electron .",
+    "build": "./node_modules/.bin/webpack"
   },
   "keywords": [
     "vk",
@@ -33,5 +34,12 @@
     "react-dom": "^0.14.7",
     "request": "^2.69.0",
     "webpack": "^1.12.14"
+  },
+  "devDependencies": {
+    "babel-core": "^6.7.6",
+    "babel-preset-react": "^6.5.0",
+    "react": "^0.14.8",
+    "react-dom": "^0.14.8",
+    "webpack": "^1.12.15"
   }
 }
