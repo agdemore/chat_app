@@ -146,9 +146,14 @@ function createChat2(historyElement) {
     li.className = 'a';
     let message = document.createElement('p');
     let dateElem = document.createElement('span');
+    dateElem.className = 'message-time';
     let date = historyElement.date * 1000;
     let nDate = new Date(date);
-    dateElem.innerHTML = nDate;
+    if (nDate.getMinutes() < 10) {
+        dateElem.innerHTML = nDate.getHours() + ':0' + nDate.getMinutes();
+    } else {
+        dateElem.innerHTML = nDate.getHours() + ':' + nDate.getMinutes();
+    }
     message.className = 'a-inner';
     if (historyElement.attachments) {
         console.log('>>>', historyElement.attachments);
@@ -164,30 +169,11 @@ function createChat2(historyElement) {
         li.className = 'a-message-from-me';
         message.className = 'a-inner from-me-color';
     }
-
+    message.appendChild(dateElem);
     li.appendChild(message);
     return li;
 }
 
-// function createChat(historyElement) {
-//     var li = document.createElement('div');
-//     li.className = 'm chat-message';
-//     var message = document.createElement('p');
-//     let dateElem = document.createElement('span');
-//     let date = historyElement.date * 1000;
-//     let nDate = new Date(date);
-//     dateElem.innerHTML = nDate;
-//     message.className = 'chat-message-inner';
-//     message.innerHTML = historyElement.body;
-//     if (historyElement.from_id == userId) {
-//         li.className = 'm chat-message-from-me';
-//         message.className = 'chat-message-inner from-me-color';
-//     }
-//
-//     li.appendChild(message);
-//     // li.appendChild(dateElem);
-//     return li;
-// }
 
 function clearChat() {
     let div = document.getElementById('chat');
@@ -257,9 +243,15 @@ function createBigChat(historyElement) {
     let fromUser = document.createElement('img');
     let message = document.createElement('p');
     let dateElem = document.createElement('span');
+    dateElem.className = 'message-time';
     let date = historyElement.date * 1000;
     let nDate = new Date(date);
     dateElem.innerHTML = nDate;
+    if (nDate.getMinutes() < 10) {
+        dateElem.innerHTML = nDate.getHours() + ':0' + nDate.getMinutes();
+    } else {
+        dateElem.innerHTML = nDate.getHours() + ':' + nDate.getMinutes();
+    }
     message.className = 'a-inner';
     if (historyElement.attachments) {
         message.innerHTML = messageTypesHelper(historyElement.attachments);
@@ -285,7 +277,7 @@ function createBigChat(historyElement) {
     if (historyElement.from_id != userId) {
         div.appendChild(fromUser)
     }
-
+    message.appendChild(dateElem);
     div.appendChild(message);
     return div;
 }
@@ -423,11 +415,14 @@ function createMessage(dialogElement) {
         let chatName = dialogElement['message']['title'];
         let uid = dialogElement['message']['user_id'];
         userInfo.innerHTML = chatName;
-        // for (let i = 0; i < u.length; i++) {
-            if (u[uid]) {
-                let chatLastSender = u[uid]['first_name']+ ' ' + u[uid]['last_name'];
-            }
-        // }
+        if (u[uid]) {
+            let chatLastSender = u[uid]['first_name']+ ' ' + u[uid]['last_name'];
+        }
+        if (dialogElement['message']['photo_50']) {
+            img.src = dialogElement['message']['photo_50'];
+        }
+
+
         li.setAttribute('onclick', 'loadChatMessageHistory("' + dialogElement['message']['chat_id'] + '", "0");');
         li.setAttribute('chat_id', dialogElement['message']['chat_id']);
         li.setAttribute('pagination', '50');
