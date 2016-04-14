@@ -381,3 +381,11 @@ img.attachment-img {
     overflow: hidden;
     margin: 0;
 }
+
+.message-time {
+    position: relative;
+    bottom: -7px;
+    font-size: 0.8em;
+    padding: 0 0 0 5px;
+    color: #969696;
+}
