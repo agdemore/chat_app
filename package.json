@@ -28,7 +28,6 @@
     "electron": "^0.4.1",
     "electron-prebuilt": "^0.37.2",
     "htmlparser2": "^3.9.0",
-    "jquery": "^2.2.2",
     "json-loader": "^0.5.4",
     "node-notifier": "^4.5.0",
     "react": "^0.14.7",
